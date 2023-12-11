@@ -42,7 +42,7 @@ public class Produto {
     @Column(name = "img")
     private String img;
 
-     @ManyToOne
+    @ManyToOne
     @JoinColumn(name = "marca_id", nullable = false, updatable = false) 
     private Marca marca;
 }
