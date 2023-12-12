@@ -1,5 +1,7 @@
 package com.example.ApiShop.model;
 
+import java.math.BigDecimal;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -41,6 +43,9 @@ public class Produto {
 
     @Column(name = "img")
     private String img;
+
+    @Column(name = "preco", precision = 6, scale = 2)
+    private BigDecimal preco;
 
     @ManyToOne
     @JoinColumn(name = "marca_id", nullable = false, updatable = false) 
