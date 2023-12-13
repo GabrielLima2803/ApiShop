@@ -57,7 +57,8 @@ public class ProdutoController {
 
     @PutMapping("/{id}")
     public ResponseEntity<Void> update(@Valid @RequestBody Produto obj, @PathVariable Long id) {
-        produtoService.update(id, obj);
+        obj.setId(id);
+        obj = this.produtoService.update(id, obj);
         return ResponseEntity.noContent().build();
     }
 
