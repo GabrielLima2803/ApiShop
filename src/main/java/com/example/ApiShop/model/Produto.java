@@ -48,6 +48,6 @@ public class Produto {
     private BigDecimal preco;
 
     @ManyToOne
-    @JoinColumn(name = "marca_id", nullable = false, updatable = false) 
+    @JoinColumn(name = "marca_id", nullable = false) 
     private Marca marca;
 }
