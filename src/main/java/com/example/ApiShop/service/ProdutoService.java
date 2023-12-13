@@ -44,7 +44,10 @@ public class ProdutoService {
         Produto existingProduto = findById(id);
 
         existingProduto.setNome(updatedProduto.getNome());
+        existingProduto.setDescricao(updatedProduto.getDescricao());
+        existingProduto.setImg(updatedProduto.getImg());
         existingProduto.setPreco(updatedProduto.getPreco());
+        existingProduto.setMarca(updatedProduto.getMarca());
 
         return produtoRepository.save(existingProduto);
     }
