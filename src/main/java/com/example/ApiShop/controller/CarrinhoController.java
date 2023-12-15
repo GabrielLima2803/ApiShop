@@ -33,7 +33,7 @@ public class CarrinhoController {
         return ResponseEntity.ok(carrinhos);
     }
     @PostMapping("/criar")
-    public ResponseEntity<Carrinho> criarCarrinho(@Valid @RequestBody Carrinho carrinho) {
+    public ResponseEntity<Carrinho> create(@Valid @RequestBody Carrinho carrinho) {
         Carrinho savedCarriho = this.carrinhoService.create(carrinho);
         URI uri = URI.create("/carrinho/" + savedCarriho.getId());
         return ResponseEntity.created(uri).build();
