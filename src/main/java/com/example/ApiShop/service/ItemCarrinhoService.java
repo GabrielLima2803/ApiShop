@@ -28,13 +28,15 @@ public class ItemCarrinhoService {
         return itemCarrinhoRepository.findAll();
     }
 
-
+    @Transactional
     public ItemCarrinho create(ItemCarrinho obj) {
         return this.itemCarrinhoRepository.save(obj);
     }
 
+    @Transactional
     public ItemCarrinho update(Long id, ItemCarrinho updatedItemCarrinho) {
         ItemCarrinho existingItemCarrinho = findById(id);
+        existingItemCarrinho.setProduto(updatedItemCarrinho.getProduto());
         return itemCarrinhoRepository.save(existingItemCarrinho);
     }
 
