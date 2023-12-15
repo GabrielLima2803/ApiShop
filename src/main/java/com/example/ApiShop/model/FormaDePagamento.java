@@ -35,7 +35,7 @@ public class FormaDePagamento {
     private String tipo_pagamento;
 
     @Column(name = "parcela")
-    @NotEmpty
-    @NotNull
     private Parcel parcela;
+
+    
 }
