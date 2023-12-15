@@ -27,11 +27,12 @@ public class FormaDePagamentoService {
         return formaPagamentoRepository.findAll();
     }
 
-
+    @Transactional
     public FormaDePagamento create(FormaDePagamento obj) {
         return this.formaPagamentoRepository.save(obj);
     }
 
+    @Transactional
     public FormaDePagamento update(Long id, FormaDePagamento updatedFormaDePagamento) {
         FormaDePagamento existingFormaDePagamento = findById(id);
         existingFormaDePagamento.setTipo_pagamento(updatedFormaDePagamento.getTipo_pagamento());
