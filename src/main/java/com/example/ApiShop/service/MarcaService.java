@@ -28,11 +28,12 @@ public class MarcaService {
         return marcaRepository.findAll();
     }
 
-
+    @Transactional
     public Marca create(Marca obj) {
         return this.marcaRepository.save(obj);
     }
 
+    @Transactional
     public Marca update(Long id, Marca updatedMarca) {
         Marca existingMarca = findById(id);
         existingMarca.setNome(updatedMarca.getNome());
