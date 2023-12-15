@@ -3,12 +3,14 @@ package com.example.ApiShop.service;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.example.ApiShop.model.Carrinho;
 import com.example.ApiShop.model.ItemCarrinho;
 import com.example.ApiShop.repositories.CarrinhoRepository;
 
+@Service
 public class CarrinhoService {
     @Autowired
     private CarrinhoRepository carrinhoRepository;
@@ -46,42 +48,5 @@ public class CarrinhoService {
         }
     }
 
-    @Transactional(readOnly = true)
-    public List<ItemCarrinho> getItensCarrinho(Long carrinhoId) {
-        Carrinho carrinho = findById(carrinhoId);
-        return itemCarrinhoService.findByCarrinho(carrinho);
-    }
 
-    @Transactional
-    public Carrinho adicionarItem(Long carrinhoId, Long itemId) {
-        Carrinho carrinho = findById(carrinhoId);
-        ItemCarrinho item = itemCarrinhoService.findById(itemId);
-        List<ItemCarrinho> itens = carrinho.getItens();
-        boolean itemExistente = false;
-
-        for (ItemCarrinho i : itens) {
-            if (i.getProduto().getId().equals(item.getProduto().getId())) {
-                itemExistente = true;
-                break;
-            }
-        }
-
-        if (!itemExistente) {
-            ItemCarrinho novoItem = new ItemCarrinho();
-            novoItem.setProduto(item.getProduto());
-            carrinho.getItens().add(novoItem);
-        }
-
-        return carrinhoRepository.save(carrinho);
-    }
-
-    @Transactional
-    public Carrinho removerItem(Long carrinhoId, Long itemId) {
-        Carrinho carrinho = findById(carrinhoId);
-        ItemCarrinho item = itemCarrinhoService.findById(itemId);
-
-        carrinho.getItens().removeIf(i -> i.getProduto().getId().equals(item.getProduto().getId()));
-
-        return carrinhoRepository.save(carrinho);
-    }
 }
