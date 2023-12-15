@@ -7,16 +7,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.example.ApiShop.model.Carrinho;
-import com.example.ApiShop.model.ItemCarrinho;
 import com.example.ApiShop.repositories.CarrinhoRepository;
 
 @Service
 public class CarrinhoService {
     @Autowired
     private CarrinhoRepository carrinhoRepository;
-
-    @Autowired
-    private ItemCarrinhoService itemCarrinhoService;
 
     @Transactional(readOnly = true)
     public Carrinho findById(Long id) {
@@ -29,12 +25,15 @@ public class CarrinhoService {
         return carrinhoRepository.findAll();
     }
 
+    @Transactional
     public Carrinho create(Carrinho obj) {
         return carrinhoRepository.save(obj);
     }
 
+    @Transactional
     public Carrinho update(Long id, Carrinho updatedCarrinho) {
         Carrinho existingCarrinho = findById(id);
+        existingCarrinho.setTotal(updatedCarrinho.getTotal());
         existingCarrinho.setFormaDePagamento(updatedCarrinho.getFormaDePagamento());
         return carrinhoRepository.save(existingCarrinho);
     }
