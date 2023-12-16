@@ -1,5 +1,6 @@
 package com.example.ApiShop.service;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.example.ApiShop.model.Carrinho;
+import com.example.ApiShop.model.ItemCarrinho;
 import com.example.ApiShop.repositories.CarrinhoRepository;
 
 @Service
@@ -46,6 +48,8 @@ public class CarrinhoService {
             throw new RuntimeException("Não é possível excluir pois há entidades relacionadas!");
         }
     }
+
+        
 
 
 }
