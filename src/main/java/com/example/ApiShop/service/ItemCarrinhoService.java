@@ -16,6 +16,9 @@ public class ItemCarrinhoService {
     @Autowired
     private ItemCarrinhoRepository itemCarrinhoRepository;
 
+    @Autowired 
+    private CarrinhoService carrinhoService;
+
     @Transactional(readOnly = true)
     public ItemCarrinho findById(Long id) {
         Optional<ItemCarrinho> ItemCarrinho = this.itemCarrinhoRepository.findById(id);
@@ -30,9 +33,14 @@ public class ItemCarrinhoService {
 
     @Transactional
     public ItemCarrinho create(ItemCarrinho obj) {
-        return this.itemCarrinhoRepository.save(obj);
+        ItemCarrinho newItemCarrinho = this.itemCarrinhoRepository.save(obj);
+        Carrinho carrinho = newItemCarrinho.getCarrinho();
+        
+        carrinho.getItens().add(newItemCarrinho);
+        carrinho.recalculateTotal(); 
+    
+        return newItemCarrinho;
     }
-
     @Transactional
     public ItemCarrinho update(Long id, ItemCarrinho updatedItemCarrinho) {
         ItemCarrinho existingItemCarrinho = findById(id);
