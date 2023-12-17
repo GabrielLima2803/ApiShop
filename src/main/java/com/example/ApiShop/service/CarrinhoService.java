@@ -1,6 +1,5 @@
 package com.example.ApiShop.service;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,7 +7,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.example.ApiShop.model.Carrinho;
-import com.example.ApiShop.model.ItemCarrinho;
 import com.example.ApiShop.repositories.CarrinhoRepository;
 
 @Service
@@ -37,6 +35,7 @@ public class CarrinhoService {
         Carrinho existingCarrinho = findById(id);
         existingCarrinho.setTotal(updatedCarrinho.getTotal());
         existingCarrinho.setFormaDePagamento(updatedCarrinho.getFormaDePagamento());
+        existingCarrinho.setItens(updatedCarrinho.getItens());
         return carrinhoRepository.save(existingCarrinho);
     }
 
