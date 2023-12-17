@@ -1,17 +1,18 @@
 package com.example.ApiShop.controller;
 
-import com.example.ApiShop.model.Carrinho;
-import com.example.ApiShop.service.CarrinhoService;
 
-import jakarta.validation.Valid;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.net.URI;
-import java.util.List;
+import com.example.ApiShop.model.Carrinho;
+import com.example.ApiShop.model.ItemCarrinho;
+import com.example.ApiShop.service.CarrinhoService;
+
 
 @RestController
 @RequestMapping("/carrinho")
@@ -21,36 +22,49 @@ public class CarrinhoController {
     @Autowired
     private CarrinhoService carrinhoService;
 
-    @GetMapping("/{id}")
-    public ResponseEntity<Carrinho> findById(@PathVariable Long id) {
-        Carrinho obj = carrinhoService.findById(id);
-        return ResponseEntity.ok(obj);
-    }
-
-    @GetMapping("/all")
-    public ResponseEntity<List<Carrinho>> findAll() {
+    @GetMapping
+    public ResponseEntity<List<Carrinho>> getAllCarrinhos() {
         List<Carrinho> carrinhos = carrinhoService.findAll();
-        return ResponseEntity.ok(carrinhos);
-    }
-    @PostMapping("/criar")
-    public ResponseEntity<Carrinho> create(@Valid @RequestBody Carrinho carrinho) {
-        Carrinho savedCarriho = this.carrinhoService.create(carrinho);
-        URI uri = URI.create("/carrinho/" + savedCarriho.getId());
-        return ResponseEntity.created(uri).build();
+        return new ResponseEntity<>(carrinhos, HttpStatus.OK);
     }
 
-    @PutMapping("/atualizar/{id}")
-    public ResponseEntity<Void> update(@Valid @RequestBody Carrinho obj, @PathVariable Long id) {
-        obj.setId(id);
-        obj = this.carrinhoService.update(id, obj);
-        return ResponseEntity.noContent().build();
+    @GetMapping("/{id}")
+    public ResponseEntity<Carrinho> getCarrinhoById(@PathVariable Long id) {
+        Carrinho carrinho = carrinhoService.findById(id);
+        return new ResponseEntity<>(carrinho, HttpStatus.OK);
     }
 
-    @DeleteMapping("/excluir/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
+    @PostMapping
+    public ResponseEntity<Carrinho> createCarrinho() {
+        Carrinho novoCarrinho = carrinhoService.create(new Carrinho());
+        return new ResponseEntity<>(novoCarrinho, HttpStatus.CREATED);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Carrinho> updateCarrinho(@PathVariable Long id, @RequestBody Carrinho updatedCarrinho) {
+        Carrinho carrinho = carrinhoService.update(id, updatedCarrinho);
+        return new ResponseEntity<>(carrinho, HttpStatus.OK);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteCarrinho(@PathVariable Long id) {
         carrinhoService.delete(id);
-        return ResponseEntity.noContent().build(); 
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
+    // Arrumar ngc do id, chatgpt
+    @PostMapping("/{id}/adicionar-item")
+    public ResponseEntity<Carrinho> adicionarItem(@PathVariable Long id, @RequestBody ItemCarrinho itemCarrinho) {
+        Carrinho carrinho = carrinhoService.findById(id);
+        carrinhoService.adicionarItem(carrinho, itemCarrinho);
+        return new ResponseEntity<>(carrinho, HttpStatus.OK);
+    }
+
+    @PostMapping("/{id}/remover-item")
+    public ResponseEntity<Carrinho> removerItem(@PathVariable Long id, @RequestBody ItemCarrinho itemCarrinho) {
+        Carrinho carrinho = carrinhoService.findById(id);
+        carrinhoService.removerItem(carrinho, itemCarrinho);
+        return new ResponseEntity<>(carrinho, HttpStatus.OK);
+    }
 
 }
