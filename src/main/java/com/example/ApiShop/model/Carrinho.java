@@ -3,9 +3,12 @@ package com.example.ApiShop.model;
 import java.math.BigDecimal;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -19,33 +22,33 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = Carrinho.TABLE_NAME)
 @Getter
 @Setter
-@AllArgsConstructor
-@NoArgsConstructor
 @EqualsAndHashCode
 public class Carrinho {
     public static final String TABLE_NAME = "Carrinho";
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @JsonProperty("id")
     @Column(name = "id", unique = true)
     private Long id;
 
     @Column(name = "total", scale = 2)
+    @JsonProperty("total")
     private BigDecimal total;
 
     @ManyToOne
-    @JoinColumn(name = "foramPagamento_id", nullable = false)
+    @JoinColumn(name = "formaPagamento_id", nullable = false)  
+    @JsonProperty("formaDePagamento")
     private FormaDePagamento formaDePagamento;
 
-
-    public void setTotal(BigDecimal total) {
-        this.total = total;
-    }
-    @OneToMany(mappedBy = "carrinho", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonProperty("itens")
+    @OneToMany(mappedBy = "carrinho", fetch = FetchType.EAGER)
     private List<ItemCarrinho> itens;
 
     public void recalculateTotal() {
@@ -53,9 +56,11 @@ public class Carrinho {
             BigDecimal novoTotal = BigDecimal.ZERO;
     
             for (ItemCarrinho item : itens) {
-                BigDecimal precoProduto = item.getProduto().getPreco();
-                BigDecimal subtotalItem = precoProduto.multiply(BigDecimal.valueOf(item.getQuantidade()));
-                novoTotal = novoTotal.add(subtotalItem);
+                if (item.getProduto() != null && item.getProduto().getPreco() != null) {
+                    BigDecimal precoProduto = item.getProduto().getPreco();
+                    BigDecimal subtotalItem = precoProduto.multiply(BigDecimal.valueOf(item.getQuantidade()));
+                    novoTotal = novoTotal.add(subtotalItem);
+                }
             }
     
             setTotal(novoTotal);
