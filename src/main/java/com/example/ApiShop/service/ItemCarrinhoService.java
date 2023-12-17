@@ -1,7 +1,7 @@
 package com.example.ApiShop.service;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,16 +16,12 @@ public class ItemCarrinhoService {
     @Autowired
     private ItemCarrinhoRepository itemCarrinhoRepository;
 
-    @Autowired 
-    private CarrinhoService carrinhoService;
-
     @Transactional(readOnly = true)
     public ItemCarrinho findById(Long id) {
-        Optional<ItemCarrinho> ItemCarrinho = this.itemCarrinhoRepository.findById(id);
-        return ItemCarrinho.orElseThrow(() -> new RuntimeException(
-                "ItemCarrinho não encontrado! Id: " + id + ", Tipo: " + ItemCarrinho.class.getName()));
+        return itemCarrinhoRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("ItemCarrinho não encontrado! Id: " + id + ", Tipo: " + ItemCarrinho.class.getName()));
     }
-    
+
     @Transactional(readOnly = true)
     public List<ItemCarrinho> findAll() {
         return itemCarrinhoRepository.findAll();
@@ -35,12 +31,17 @@ public class ItemCarrinhoService {
     public ItemCarrinho create(ItemCarrinho obj) {
         ItemCarrinho newItemCarrinho = this.itemCarrinhoRepository.save(obj);
         Carrinho carrinho = newItemCarrinho.getCarrinho();
-        
+
+        if (carrinho.getItens() == null) {
+            carrinho.setItens(new ArrayList<>());
+        }
+
         carrinho.getItens().add(newItemCarrinho);
-        carrinho.recalculateTotal(); 
-    
+        carrinho.recalculateTotal();
+
         return newItemCarrinho;
     }
+
     @Transactional
     public ItemCarrinho update(Long id, ItemCarrinho updatedItemCarrinho) {
         ItemCarrinho existingItemCarrinho = findById(id);
@@ -56,6 +57,7 @@ public class ItemCarrinhoService {
             throw new RuntimeException("Não é possível excluir pois há entidades relacionadas!");
         }
     }
+
     @Transactional(readOnly = true)
     public List<ItemCarrinho> findByCarrinho(Carrinho carrinho) {
         return itemCarrinhoRepository.findByCarrinho(carrinho);
