@@ -1,9 +1,9 @@
 package com.example.ApiShop.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import java.math.BigDecimal;
 
-import jakarta.persistence.Column;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -33,7 +33,6 @@ public class ItemCarrinho {
 
     @ManyToOne
     @JoinColumn(name = "carrinho_id", nullable = false)
-    @JsonIgnoreProperties("itens")
     @JsonIgnore
     private Carrinho carrinho;
 
@@ -41,6 +40,14 @@ public class ItemCarrinho {
     @JoinColumn(name = "produto_id", nullable = false)
     private Produto produto;
 
-    @Column(name = "quantidade")
-    private int quantidade; 
+    public BigDecimal getSubtotal() {
+        if (produto != null && produto.getPreco() != null) {
+            BigDecimal precoUnitario = produto.getPreco();
+            return precoUnitario.multiply(BigDecimal.valueOf(quantidade));
+        } else {
+            return BigDecimal.ZERO;
+        }
+    }
+
+    private int quantidade;
 }
