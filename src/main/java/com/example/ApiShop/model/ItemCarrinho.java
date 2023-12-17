@@ -1,5 +1,8 @@
 package com.example.ApiShop.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -29,11 +32,13 @@ public class ItemCarrinho {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "carrinho_id", updatable = false, nullable = false)
+    @JoinColumn(name = "carrinho_id", nullable = false)
+    @JsonIgnoreProperties("itens")
+    @JsonIgnore
     private Carrinho carrinho;
 
     @ManyToOne
-    @JoinColumn(name = "produto_id", updatable = false, nullable = false)
+    @JoinColumn(name = "produto_id", nullable = false)
     private Produto produto;
 
     @Column(name = "quantidade")
