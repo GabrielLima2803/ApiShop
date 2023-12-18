@@ -2,6 +2,7 @@ package com.example.ApiShop.controller;
 
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -69,11 +70,42 @@ public class CarrinhoController {
     return new ResponseEntity<>(carrinho, HttpStatus.OK);
 }
 
+
 @PostMapping("/{id}/remover-item")
-public ResponseEntity<Carrinho> removerItem(@PathVariable Long id, @RequestBody ItemCarrinho itemCarrinho) {
+public ResponseEntity<Carrinho> removerItem(@PathVariable Long id, @RequestBody Map<String, Long> requestBody) {
+    Long produtoId = requestBody.get("produtoId");
     Carrinho carrinho = carrinhoService.findById(id);
-    carrinhoService.removerItem(carrinho, itemCarrinho);
+    carrinhoService.removerItem(carrinho, produtoId);
     return new ResponseEntity<>(carrinho, HttpStatus.OK);
 }
+
+@PostMapping("/{id}/add-quantidade")
+public ResponseEntity<Carrinho> adicionarOuAtualizarQuantidade(
+        @PathVariable Long id, @RequestBody ItemCarrinho itemCarrinho) {
+    Carrinho carrinho = carrinhoService.findById(id);
+    Produto produto = produtoService.findById(itemCarrinho.getProduto().getId());
+    itemCarrinho.setProduto(produto);
+
+    carrinhoService.adicionarOuAtualizarQuantidade(carrinho, itemCarrinho);
+
+    return new ResponseEntity<>(carrinho, HttpStatus.OK);
+}
+
+@PostMapping("/{id}/remove-quantidade")
+public ResponseEntity<Carrinho> removerQuantidade(
+        @PathVariable Long id, @RequestBody Map<String, Object> requestBody) {
+    try {
+        Long produtoId = ((Number) requestBody.get("produtoId")).longValue();
+        Integer quantidade = ((Number) requestBody.get("quantidade")).intValue();
+
+        Carrinho carrinho = carrinhoService.findById(id);
+        carrinhoService.removerQuantidade(carrinho, produtoId, quantidade);
+
+        return new ResponseEntity<>(carrinho, HttpStatus.OK);
+    } catch (ClassCastException | NullPointerException | ArithmeticException e) {
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    }
+}
+
 
 }
