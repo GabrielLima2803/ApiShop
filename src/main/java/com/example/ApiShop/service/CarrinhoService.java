@@ -56,18 +56,17 @@ public Carrinho create(Carrinho obj) {
             throw new RuntimeException("Não é possivel excluir pois há entidades relacionadas!");
         }
     }
-
+    @Transactional
     public void adicionarItem(Carrinho carrinho, ItemCarrinho itemCarrinho) {
         itemCarrinho.setCarrinho(carrinho);
         itemCarrinhoRepository.save(itemCarrinho);
 
         atualizarTotal(carrinho);
     }
-
+    @Transactional
     public void removerItem(Carrinho carrinho, ItemCarrinho itemCarrinho) {
         itemCarrinho.setCarrinho(null);
         itemCarrinhoRepository.delete(itemCarrinho);
-
         atualizarTotal(carrinho);
     }
 
