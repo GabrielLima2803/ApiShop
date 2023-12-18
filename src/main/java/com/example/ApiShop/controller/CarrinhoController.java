@@ -11,7 +11,10 @@ import org.springframework.web.bind.annotation.*;
 
 import com.example.ApiShop.model.Carrinho;
 import com.example.ApiShop.model.ItemCarrinho;
+import com.example.ApiShop.model.Produto;
 import com.example.ApiShop.service.CarrinhoService;
+import com.example.ApiShop.service.ProdutoService;
+
 
 
 @RestController
@@ -21,6 +24,9 @@ public class CarrinhoController {
 
     @Autowired
     private CarrinhoService carrinhoService;
+
+    @Autowired
+    private ProdutoService produtoService;
 
     @GetMapping
     public ResponseEntity<List<Carrinho>> getAllCarrinhos() {
@@ -52,19 +58,22 @@ public class CarrinhoController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    // Arrumar ngc do id, chatgpt
     @PostMapping("/{id}/adicionar-item")
     public ResponseEntity<Carrinho> adicionarItem(@PathVariable Long id, @RequestBody ItemCarrinho itemCarrinho) {
-        Carrinho carrinho = carrinhoService.findById(id);
-        carrinhoService.adicionarItem(carrinho, itemCarrinho);
-        return new ResponseEntity<>(carrinho, HttpStatus.OK);
-    }
+    Carrinho carrinho = carrinhoService.findById(id);    
+    Produto produto = produtoService.findById(itemCarrinho.getProduto().getId());
+    itemCarrinho.setProduto(produto);
+    
+    carrinhoService.adicionarItem(carrinho, itemCarrinho);
+    
+    return new ResponseEntity<>(carrinho, HttpStatus.OK);
+}
 
-    @PostMapping("/{id}/remover-item")
-    public ResponseEntity<Carrinho> removerItem(@PathVariable Long id, @RequestBody ItemCarrinho itemCarrinho) {
-        Carrinho carrinho = carrinhoService.findById(id);
-        carrinhoService.removerItem(carrinho, itemCarrinho);
-        return new ResponseEntity<>(carrinho, HttpStatus.OK);
-    }
+@PostMapping("/{id}/remover-item")
+public ResponseEntity<Carrinho> removerItem(@PathVariable Long id, @RequestBody ItemCarrinho itemCarrinho) {
+    Carrinho carrinho = carrinhoService.findById(id);
+    carrinhoService.removerItem(carrinho, itemCarrinho);
+    return new ResponseEntity<>(carrinho, HttpStatus.OK);
+}
 
 }
