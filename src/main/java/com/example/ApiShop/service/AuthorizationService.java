@@ -26,7 +26,7 @@ import jakarta.validation.Valid;
 @Service
 public class AuthorizationService implements UserDetailsService {   
 
- @Autowired
+    @Autowired
     private ApplicationContext context;
     
     @Autowired
@@ -35,6 +35,7 @@ public class AuthorizationService implements UserDetailsService {
     @Autowired
     private TokenService tokenService;
 
+    @Autowired
     private AuthenticationManager authenticationManager;
     
     @Override
